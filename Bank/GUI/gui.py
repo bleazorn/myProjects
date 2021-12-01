@@ -7,6 +7,7 @@ from GUI.frameBankStatement import BankStatementFrame
 from GUI.frameCategorie import CategoryFrame
 from GUI.frameGraph import GraphCanvas
 from GUI.frameSuper import FrameSuper
+from objects.dataCategory import DataCategory
 
 
 class gui:
@@ -83,7 +84,7 @@ class gui:
         # list of indexes
         catSel = self.catF.getSelected()
         if catSel:
-            colo = self.background.getCategories()[catSel[0]][1]
+            colo = self.background.getCategories()[catSel[0]].getAttr(DataCategory.colorC)
             self.colorSelected(colo)
 
     # makes the bankstatements colorless

@@ -4,6 +4,8 @@ import input.statementReader as staR
 
 from datetime import date
 
+from objects.dataCategory import DataCategory
+
 
 class Background:
     def __init__(self, staFileP, catFileP):
@@ -59,16 +61,18 @@ class Background:
         return self.dataCat
 
     # adds a new category
-    # cat = (name, color)
+    # cat is DataCategory type
     def addCategory(self, cat):
+        if not isinstance(cat, DataCategory):
+            return
         self.dataCat.append(cat)
         catR.addCategory(self.catFile, cat, None)
 
     # removes the category at given index
     def delCategory(self, index):
         cat = self.dataCat.pop(index)
-        self.decolorStatements(cat[1])
-        catR.deleteCategory(self.catFile, cat[0])
+        self.decolorStatements(cat.getAttr(DataCategory.colorC))
+        catR.deleteCategory(self.catFile, cat.getAttr(DataCategory.nameC))
 
     # Decolors all statements with the given coloring
     def decolorStatements(self, coloring):
@@ -110,10 +114,12 @@ class Background:
             else:
                 temp[colo] = float(sta.getAttr("Bedrag"))
         for cat in cats:
-            if temp.__contains__(cat[1]):
-                ret.append((cat[0], -temp[cat[1]], cat[1]))
+            nameC = cat.getAttr(DataCategory.nameC)
+            colorC = cat.getAttr(DataCategory.colorC)
+            if temp.__contains__(colorC):
+                ret.append((nameC, -temp[colorC], colorC))
             else:
-                ret.append((cat[0], 0, cat[1]))
+                ret.append((nameC, 0, colorC))
         return ret
 
     @staticmethod

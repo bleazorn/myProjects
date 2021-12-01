@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, colorchooser
 
 from GUI.frameSuper import FrameSuper
+from objects.dataCategory import DataCategory
 
 
 class CategoryFrame(FrameSuper):
@@ -32,21 +33,25 @@ class CategoryFrame(FrameSuper):
     # gets a list of names of categories
     def getCatFromData(self):
         ret = []
-        for tup in self.background.getCategories():
-            ret.append(tup[0])
+        for cat in self.background.getCategories():
+            if not isinstance(cat, DataCategory):
+                return
+            ret.append(cat.getAttr(DataCategory.nameC))
         return ret
 
     # creates the listbox of categories
     def generateListbox(self):
         i = 0
-        for tup in self.background.getCategories():
-            self.addListbox(tup, i)
+        for cat in self.background.getCategories():
+            self.addListbox(cat, i)
             i += 1
 
     # adds a listbox, only do when data is already correct
-    def addListbox(self, tup, index):
-        self.listbox.insert(index, tup[0])
-        self.listbox.itemconfig(index, bg=tup[1])
+    def addListbox(self, cat, index):
+        if not isinstance(cat, DataCategory):
+            return
+        self.listbox.insert(index, cat.getAttr(DataCategory.nameC))
+        self.listbox.itemconfig(index, bg=cat.getAttr(DataCategory.colorC))
 
     # deletes listbox, only do when data is already removed
     def deleteListbox(self, index):
@@ -57,7 +62,7 @@ class CategoryFrame(FrameSuper):
         if self.textAddCat.get():
             text = self.textAddCat.get()
             coloring = colorchooser.askcolor(title="Choose color")[1]
-            cat = (text, coloring)
+            cat = DataCategory(text, coloring)
             self.addListbox(cat, len(self.background.getCategories()))
             self.background.addCategory(cat)
 
