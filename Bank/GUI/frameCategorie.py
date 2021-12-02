@@ -36,7 +36,7 @@ class CategoryFrame(FrameSuper):
         for cat in self.background.getCategories():
             if not isinstance(cat, DataCategory):
                 return
-            ret.append(cat.getAttr(DataCategory.nameC))
+            ret.append(cat.getName())
         return ret
 
     # creates the listbox of categories
@@ -50,8 +50,8 @@ class CategoryFrame(FrameSuper):
     def addListbox(self, cat, index):
         if not isinstance(cat, DataCategory):
             return
-        self.listbox.insert(index, cat.getAttr(DataCategory.nameC))
-        self.listbox.itemconfig(index, bg=cat.getAttr(DataCategory.colorC))
+        self.listbox.insert(index, cat.getName())
+        self.listbox.itemconfig(index, bg=cat.getColor())
 
     # deletes listbox, only do when data is already removed
     def deleteListbox(self, index):

@@ -15,7 +15,7 @@ class Background:
         self.dataBan = staR.getBankStatements(self.staFile)
         self.dataBan.sort(key=lambda x: x.sortVolgnummer(), reverse=True)
 
-        self.dataCat = catR.getCategories(self.catFile)
+        self.dataCat = catR.getAllCategories(self.catFile)
 
     # returns a list of bankstatemnts
     def getBankStatements(self, first=None, last=None):
@@ -60,6 +60,9 @@ class Background:
     def getCategories(self):
         return self.dataCat
 
+    def getColorOfSelectedCategory(self, index):
+        return self.dataCat[index].getColor()
+
     # adds a new category
     # cat is DataCategory type
     def addCategory(self, cat):
@@ -71,8 +74,8 @@ class Background:
     # removes the category at given index
     def delCategory(self, index):
         cat = self.dataCat.pop(index)
-        self.decolorStatements(cat.getAttr(DataCategory.colorC))
-        catR.deleteCategory(self.catFile, cat.getAttr(DataCategory.nameC))
+        self.decolorStatements(cat.getColor())
+        catR.deleteCategory(self.catFile, cat.getName())
 
     # Decolors all statements with the given coloring
     def decolorStatements(self, coloring):
@@ -114,8 +117,8 @@ class Background:
             else:
                 temp[colo] = float(sta.getAttr("Bedrag"))
         for cat in cats:
-            nameC = cat.getAttr(DataCategory.nameC)
-            colorC = cat.getAttr(DataCategory.colorC)
+            nameC = cat.getName()
+            colorC = cat.getColor()
             if temp.__contains__(colorC):
                 ret.append((nameC, -temp[colorC], colorC))
             else:

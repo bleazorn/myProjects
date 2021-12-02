@@ -62,7 +62,7 @@ class GraphCanvas(FrameSuper):
 
 
         except ZeroDivisionError:
-            print("No categories")
+            print("No categories. NNullpointError in Graph")
 
 
 

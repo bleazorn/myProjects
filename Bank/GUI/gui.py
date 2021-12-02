@@ -84,7 +84,7 @@ class gui:
         # list of indexes
         catSel = self.catF.getSelected()
         if catSel:
-            colo = self.background.getCategories()[catSel[0]].getAttr(DataCategory.colorC)
+            colo = self.background.getColorOfSelectedCategory(catSel[0])
             self.colorSelected(colo)
 
     # makes the bankstatements colorless
