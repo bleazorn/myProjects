@@ -69,6 +69,8 @@ class gui:
         root.bind('<<DateEntrySelected>>', self.changeGraph)
         root.bind("<<RefreshGraph>>", self.changeGraph)
         root.bind("<<RefreshBank>>", self.banF.generateNewEvent)
+        root.bind("<Return>", self.keyEventEnter)
+        root.bind("<Delete>", self.keyEventDelete)
 
     # adds a csv file
     def addCSVFILE(self):
@@ -116,7 +118,20 @@ class gui:
     def changeGraph(self, event):
         self.createGraph()
 
+    # What to do when pressed enter
+    def keyEventEnter(self, event):
+        if self.frameDoesNotExist(self.catF):
+            return
+        if self.catF.textAddCat.get():
+            self.catF.addCat()
 
+    # What to do when pressed delete
+    def keyEventDelete(self, event):
+        if self.frameDoesNotExist(self.catF):
+            return
+        sel = self.catF.getSelected()
+        if sel:
+            self.catF.delCat()
 
     @staticmethod
     def frameDoesNotExist(fra):
