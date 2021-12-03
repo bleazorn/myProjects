@@ -21,12 +21,16 @@ class CategoryFrame(FrameSuper):
         self.textAddCat = ttk.Entry(parent, textvariable=self.addCatText)
         self.buttAddCat = ttk.Button(parent, text="Add", command=self.addCat)
         self.buttDelCat = ttk.Button(parent, text="Del", command=self.delCat)
+        self.buttBacCat = ttk.Button(parent, text="Back", command=self.backSubCat)
 
         # Grid placement
         self.textAddCat.grid(row=self.row, column=self.col)
         self.buttAddCat.grid(row=self.row, column=self.col+1)
+        self.buttBacCat.grid(row=self.row+1, column=self.col)
         self.buttDelCat.grid(row=self.row+1, column=self.col+1)
         self.listbox.grid(row=self.row + 2, column=self.col, columnspan=2)
+
+        self.listbox.bind('<Double-Button-1>', self.getSubCat)
 
         self.generateListbox()
 
@@ -41,6 +45,7 @@ class CategoryFrame(FrameSuper):
 
     # creates the listbox of categories
     def generateListbox(self):
+        self.listbox.delete(0, self.listbox.size())
         i = 0
         for cat in self.background.getCategories():
             self.addListbox(cat, i)
@@ -124,6 +129,18 @@ class CategoryFrame(FrameSuper):
     # returns the indexes of the selected categories
     def getSelected(self):
         return self.listbox.curselection()
+
+    # get the sub categories from selected categorie
+    def getSubCat(self, event):
+        selected = self.getSelected()
+        if selected:
+            self.background.getSubCategories(selected[0])
+            self.generateListbox()
+
+    # goes back to the upper subcategory
+    def backSubCat(self):
+        self.background.goParentSubCat()
+        self.generateListbox()
 
 
 def test():

@@ -4,8 +4,6 @@ from objects.dataCategory import DataCategory
 
 categoryC = "Category"
 
-# TODO: Generalize
-# TODO: subcategory
 
 # Get all categories.
 # If parent exist, it will be all the subcategories
@@ -14,6 +12,7 @@ def getAllCategories(dataFile):
     myroot = mytree.getroot()
 
     return getCategory(myroot)
+
 
 # Get all categories under parent. Either root or another category
 def getCategory(parent):
@@ -45,6 +44,8 @@ def addCategory(dataFile, category, parent=None):
     splt = []
     if parent:
         splt = parent.split(".")
+        if not splt[-1]:
+            splt = splt[:-1]
 
     newParent = myroot
     i = len(splt)
@@ -58,7 +59,7 @@ def addCategory(dataFile, category, parent=None):
 
     isSubCat = parent is not None
     if isSubCat and i != 0:
-        print("not found")
+        print("CategoryReader: category to add not found")
         return
     createCategoryElement(newParent, category, isSubCat)
 

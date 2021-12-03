@@ -16,6 +16,8 @@ class Background:
         self.dataBan.sort(key=lambda x: x.sortVolgnummer(), reverse=True)
 
         self.dataCat = catR.getAllCategories(self.catFile)
+        self.dataCatT = self.dataCat
+        self.parentCat = ""
 
     # returns a list of bankstatemnts
     def getBankStatements(self, first=None, last=None):
@@ -69,7 +71,7 @@ class Background:
         if not isinstance(cat, DataCategory):
             return
         self.dataCat.append(cat)
-        catR.addCategory(self.catFile, cat, None)
+        catR.addCategory(self.catFile, cat, self.parentCat)
 
     # removes the category at given index
     def delCategory(self, index):
@@ -124,6 +126,39 @@ class Background:
             else:
                 ret.append((nameC, 0, colorC))
         return ret
+
+    # changes the categories to the subcategories of the category with given index
+    def getSubCategories(self, index):
+        cat = self.dataCat[index]
+        if isinstance(cat, DataCategory):
+            self.parentCat += cat.getName() + "."
+            self.dataCat = cat.getSubCategory()
+
+    # Go back to the parent of the current subcategories.
+    # if no parent, it stays the same
+    def goParentSubCat(self):
+        if self.parentCat:
+            splt = self.parentCat.split(".")
+            if not splt[-1]:
+                splt = splt[:-1]
+
+            temp = self.dataCatT
+
+            i = len(splt[:-1])
+            for s in splt[:-1]:
+                for cat in self.dataCatT:
+                    if cat.getName() == s:
+                        temp = cat.getSubCategory()
+                        i -= 1
+                        break
+
+            if i != 0:
+                print("Background: can't go up because name was not found")
+                return
+            self.dataCat = temp
+            self.parentCat = ".".join(splt[:-1])
+            if self.parentCat:
+                self.parentCat += "."
 
     @staticmethod
     def changeDatumStrInDate(datum):
