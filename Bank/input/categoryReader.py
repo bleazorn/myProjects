@@ -28,7 +28,11 @@ def getCategory(parent):
             if subEle:
                 sub = getCategory(cat)
 
-            catData = DataCategory(name, colo, sub)
+            parent = cat.find(DataCategory.parentC).text
+            if not parent:
+                parent = ""
+
+            catData = DataCategory(name, colo, sub, parent)
             ret.append(catData)
 
     return ret
@@ -41,12 +45,15 @@ def addCategory(dataFile, category, parent=None):
     mytree = ET.parse(dataFile)
     myroot = mytree.getroot()
 
+    if not isinstance(category, DataCategory):
+        return
+
+    parent = category.getParent()
     splt = []
     if parent:
         splt = parent.split(".")
-        if not splt[-1]:
-            splt = splt[:-1]
 
+    # find the parent category in the xml file
     newParent = myroot
     i = len(splt)
     for s in splt:
@@ -57,12 +64,13 @@ def addCategory(dataFile, category, parent=None):
                     i -= 1
                     break
 
-    isSubCat = parent is not None
+    # a check to see if parent was correct
+    isSubCat = parent != ""
     if isSubCat and i != 0:
         print("CategoryReader: category to add not found")
         return
-    createCategoryElement(newParent, category, isSubCat)
 
+    createCategoryElement(newParent, category, isSubCat)
     mytree.write(dataFile, xml_declaration=True, encoding="UTF-8", method='xml')
 
 
@@ -82,6 +90,9 @@ def createCategoryElement(parent, category, isSubCat=False):
     color = ET.SubElement(ele, DataCategory.colorC)
     color.text = category.getAttr(DataCategory.colorC)
 
+    parent = ET.SubElement(ele, DataCategory.parentC)
+    parent.text = category.getAttr(DataCategory.parentC)
+
 
 # deletes a category in the given file with the given name
 def deleteCategory(dataFile, categoryName):
@@ -94,6 +105,7 @@ def deleteCategory(dataFile, categoryName):
         mytree.write(dataFile, xml_declaration=True, encoding="UTF-8", method='xml')
 
 
+# TODO: get the parent field to optimize method
 # get the category from the given name.
 def getCategoryFromName(root, categoryName):
     for cat in root:

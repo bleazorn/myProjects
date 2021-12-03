@@ -4,6 +4,7 @@ import input.statementReader as staR
 
 from datetime import date
 
+from objects.dataBank import DataBank
 from objects.dataCategory import DataCategory
 
 
@@ -16,10 +17,9 @@ class Background:
         self.dataBan.sort(key=lambda x: x.sortVolgnummer(), reverse=True)
 
         self.dataCat = catR.getAllCategories(self.catFile)
-        self.dataCatT = self.dataCat
         self.parentCat = ""
 
-    # returns a list of bankstatemnts
+    # returns a list of bankstatements only for background level
     def getBankStatements(self, first=None, last=None):
         if first and last:
             ret = []
@@ -31,6 +31,35 @@ class Background:
                         ret.append(dat)
             return ret
         return self.dataBan
+
+    # returns a list of bankstatements only for gui level
+    def getBankStatementsForGui(self, first=None, last=None):
+        ret = []
+        ban = self.getBankStatements(first, last)
+        for b in ban:
+            ret.append((str(b), self.getColorFromStatement(b)))
+        return ret
+
+    # returns the color of the category of the given bankstatement
+    def getColorFromStatement(self, statement):
+        if not isinstance(statement, DataBank):
+            return
+        catLoc = statement.getCategoryName()
+        if catLoc:
+            splt = catLoc.split(".")
+            i = len(splt)-1
+            temp = self.dataCat
+            for s in splt:
+                for c in temp:
+                    if c.getName() == s:
+                        if i == 0:
+                            return c.getColor()
+                        else:
+                            temp = c.getSubCategory()
+                            i -= 1
+                        break
+        else:
+            return "white"
 
     # add a csvfile to the data xml file and sees there are no duplicates
     def addCSV(self, csvFile):
@@ -46,21 +75,25 @@ class Background:
         self.dataBan = staR.getBankStatements(self.staFile)
         self.dataBan.sort(key=lambda x: x.sortVolgnummer(), reverse=True)
 
-    # generates an xml file from a csv file
-    def __generateXMLFromCSV(self, csvFile):
-        stats = csvR.readCSVFile(csvFile)
-        for sta in stats:
-            staR.addStatement(self.staFile, sta)
-
-    # change the color of the bankstament wiht the given index
-    def changeColorStatement(self, index, colo):
-        statement = self.dataBan[index]
-        statement.setAttr("Color", colo)
+    # change the color of the bankstatement with the given index
+    def changeColorStatement(self, indexSta, indexCat):
+        catName = ""
+        if indexCat is not None:
+            catName = self.dataCat[indexCat].getFullName()
+        statement = self.dataBan[indexSta]
+        statement.setAttr(DataBank.CategoryNameC, catName)
         staR.changeStatement(self.staFile, statement)
 
-    # returns a list of categories
+    def sortBankStatements(self, eleme=None):
+        pass
+
+    # returns a list of categories only for background level
     def getCategories(self):
         return self.dataCat
+
+    # returns a list of categories only for gui level
+    def getCategoriesForGui(self):
+        return self.getCategories()
 
     def getColorOfSelectedCategory(self, index):
         return self.dataCat[index].getColor()
@@ -70,21 +103,27 @@ class Background:
     def addCategory(self, cat):
         if not isinstance(cat, DataCategory):
             return
+        cat.setAttr(DataCategory.parentC, self.parentCat)
         self.dataCat.append(cat)
-        catR.addCategory(self.catFile, cat, self.parentCat)
+        catR.addCategory(self.catFile, cat)
 
     # removes the category at given index
     def delCategory(self, index):
         cat = self.dataCat.pop(index)
-        self.decolorStatements(cat.getColor())
+        self.decolorStatements(self.parentCat, cat)
         catR.deleteCategory(self.catFile, cat.getName())
 
-    # Decolors all statements with the given coloring
-    def decolorStatements(self, coloring):
+    # Decolors all statements with the given category
+    def decolorStatements(self, parent, cat):
+        catName = cat.getName()
+        if parent:
+            catName = parent + "." + catName
         for sta in self.dataBan:
-            if sta.getAttr("Color") == coloring:
-                sta.setAttr("Color", "White")
+            if sta.getCategoryName() == catName:
+                sta.setAttr(DataBank.CategoryNameC, "")
                 staR.changeStatement(self.staFile, sta)
+            for sub in cat.getSubCategory():
+                self.decolorStatements(catName, sub)
 
     # moves data from one index to another, only do when you also move listbox
     # 0 for bankstatements, 1 for categorie
@@ -113,16 +152,25 @@ class Background:
         ret = []
         temp = {}
         for sta in stas:
-            colo = sta.getAttr("Color")
-            if temp.__contains__(colo):
-                temp[colo] = temp[colo] + float(sta.getAttr("Bedrag"))
-            else:
-                temp[colo] = float(sta.getAttr("Bedrag"))
+            catName = sta.getCategoryName()
+            if catName == "":
+                continue
+            # gets only statemnts under specific parent
+            if catName[:len(self.parentCat)] == self.parentCat:
+                splt = catName[len(self.parentCat):].split(".")
+                if self.parentCat != "":
+                    splt = catName[len(self.parentCat) + 1:].split(".")
+                if splt:
+                    catT = splt[0]
+                    if temp.__contains__(catT):
+                        temp[catT] = temp[catT] + float(sta.getAttr("Bedrag"))
+                    else:
+                        temp[catT] = float(sta.getAttr("Bedrag"))
         for cat in cats:
             nameC = cat.getName()
             colorC = cat.getColor()
-            if temp.__contains__(colorC):
-                ret.append((nameC, -temp[colorC], colorC))
+            if temp.__contains__(nameC):
+                ret.append((nameC, -temp[nameC], colorC))
             else:
                 ret.append((nameC, 0, colorC))
         return ret
@@ -131,7 +179,10 @@ class Background:
     def getSubCategories(self, index):
         cat = self.dataCat[index]
         if isinstance(cat, DataCategory):
-            self.parentCat += cat.getName() + "."
+            if self.parentCat:
+                self.parentCat += "." + cat.getName()
+            else:
+                self.parentCat = cat.getName()
             self.dataCat = cat.getSubCategory()
 
     # Go back to the parent of the current subcategories.
@@ -139,14 +190,12 @@ class Background:
     def goParentSubCat(self):
         if self.parentCat:
             splt = self.parentCat.split(".")
-            if not splt[-1]:
-                splt = splt[:-1]
 
-            temp = self.dataCatT
+            temp = catR.getAllCategories(self.catFile)
 
             i = len(splt[:-1])
             for s in splt[:-1]:
-                for cat in self.dataCatT:
+                for cat in temp:
                     if cat.getName() == s:
                         temp = cat.getSubCategory()
                         i -= 1
@@ -157,8 +206,7 @@ class Background:
                 return
             self.dataCat = temp
             self.parentCat = ".".join(splt[:-1])
-            if self.parentCat:
-                self.parentCat += "."
+
 
     @staticmethod
     def changeDatumStrInDate(datum):

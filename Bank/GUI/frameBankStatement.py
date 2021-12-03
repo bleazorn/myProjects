@@ -21,7 +21,7 @@ class BankStatementFrame(FrameSuper):
 
     # creates the listbox from the variable data
     def generateListbox(self):
-        data = self.background.getBankStatements()
+        data = self.background.getBankStatementsForGui()
         i = 0
         for dat in data:
             self.addListbox(dat, i)
@@ -38,9 +38,9 @@ class BankStatementFrame(FrameSuper):
 
     # adds a listbox, only do when data is already correct
     def addListbox(self, dat, index):
-        if type(dat) is DataBank:
-            self.listbox.insert(index, str(dat))
-            self.listbox.itemconfig(index, bg=dat.getAttr("Color"))
+        if type(dat) is tuple and len(dat) == 2:
+            self.listbox.insert(index, dat[0])
+            self.listbox.itemconfig(index, bg=dat[1])
 
     # deletes listbox, only do when data is already removed
     def deleteListbox(self, index):
@@ -49,9 +49,8 @@ class BankStatementFrame(FrameSuper):
 
     # sort listbox on certain data element
     def sortStatements(self, event):
-        data = self.background.getBankStatements()
-        sorted(data, key=lambda dat: dat[0])
-        self.generateNew(data)
+        self.background.sortBankStatements()
+        self.generateNew()
 
     # returns the indexes of selected bankstatements
     def getSelecteds(self):

@@ -2,10 +2,15 @@ from objects.dataEntry import DataEntry
 
 # normal class for bank entries
 class DataBank(DataEntry):
+    CategoryNameC = "Category"
     def __init__(self, *att):
         super().__init__(*att)
         if len(att) == 1 and type(att[0]) is dict:
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
+
+    # in the form of x.z.t
+    def getCategoryName(self):
+        return self.getAttr(DataBank.CategoryNameC)
 
     # parse the details to get the senders name
     def getOther(self, details):
@@ -70,7 +75,7 @@ class CsvDataBank(DataBank):
         super().__init__(*att)
         if len(att) == 2 and type(att[0]) is str and type(att[1]) is str:
             self.create(att[0], att[1])
-            self.setAttr("Color", "White")
+            self.setAttr(DataBank.CategoryNameC, "")
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
 
     # creates the data entry for bank statement. Needs the first line of the csv file and the data line

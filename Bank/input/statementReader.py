@@ -17,7 +17,10 @@ def getBankStatements(dataFile):
 def getStatementFromXMLEle(sta):
     d = {}
     for child in sta:
-        d[child.tag] = child.text
+        text = child.text
+        if not text:
+            text = ""
+        d[child.tag] = text
     return DataBank(d)
 
 
@@ -73,6 +76,5 @@ def test():
     csvE = DataBank(nameLine, dataLine)
     # addStatement(datFile, csvE)
     a = getBankStatements(datFile)
-    csvE.setAttr("Color", "blue")
     changeStatement(datFile, csvE)
 

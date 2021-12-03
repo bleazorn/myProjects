@@ -37,7 +37,7 @@ class CategoryFrame(FrameSuper):
     # gets a list of names of categories
     def getCatFromData(self):
         ret = []
-        for cat in self.background.getCategories():
+        for cat in self.background.getCategoriesForGui():
             if not isinstance(cat, DataCategory):
                 return
             ret.append(cat.getName())
@@ -47,7 +47,7 @@ class CategoryFrame(FrameSuper):
     def generateListbox(self):
         self.listbox.delete(0, self.listbox.size())
         i = 0
-        for cat in self.background.getCategories():
+        for cat in self.background.getCategoriesForGui():
             self.addListbox(cat, i)
             i += 1
 
@@ -68,21 +68,21 @@ class CategoryFrame(FrameSuper):
             text = self.textAddCat.get()
             coloring = colorchooser.askcolor(title="Choose color")[1]
             cat = DataCategory(text, coloring)
-            self.addListbox(cat, len(self.background.getCategories()))
             self.background.addCategory(cat)
+            self.addListbox(cat, self.listbox.size())
 
     # deletes a category, both listbox and data is updated
     def delCat(self):
         selected = self.listbox.curselection()
         for sel in reversed(selected):
-            self.deleteListbox(sel)
             self.background.delCategory(sel)
+            self.deleteListbox(sel)
             self.parent.master.event_generate("<<RefreshGraph>>")
             self.parent.master.event_generate("<<RefreshBank>>")
 
     # moves category to new index, both listbox and data is updated
     def moveCat(self, fromIndex, toIndex):
-        lenCat = len(self.background.getCategories())
+        lenCat = len(self.background.getCategoriesForGui())
         if fromIndex < 0 or fromIndex >= lenCat:
             print("given index is not in data")
             return
@@ -92,8 +92,8 @@ class CategoryFrame(FrameSuper):
             toIndex = lenCat-1
 
         self.deleteListbox(fromIndex)
-        self.addListbox(self.background.getCategories()[toIndex], toIndex)
         self.background.dataMove(fromIndex, toIndex, 1)
+        self.addListbox(self.background.getCategoriesForGui()[toIndex], toIndex)
 
     # moves every selected category one up
     def upCat(self, event):
@@ -113,7 +113,7 @@ class CategoryFrame(FrameSuper):
         selected = self.listbox.curselection()
         if len(selected) > 0:
             for sel in reversed(selected):
-                if sel >= len(self.background.getCategories()) or selected.__contains__(sel):
+                if sel >= len(self.background.getCategoriesForGui()) or selected.__contains__(sel):
                     continue
                 self.moveCat(sel, sel+1)
                 self.listbox.select_set(sel+1)
@@ -136,11 +136,13 @@ class CategoryFrame(FrameSuper):
         if selected:
             self.background.getSubCategories(selected[0])
             self.generateListbox()
+            self.parent.master.event_generate("<<RefreshGraph>>")
 
     # goes back to the upper subcategory
     def backSubCat(self):
         self.background.goParentSubCat()
         self.generateListbox()
+        self.parent.master.event_generate("<<RefreshGraph>>")
 
 
 def test():

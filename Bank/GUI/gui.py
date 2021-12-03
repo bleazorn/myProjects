@@ -84,23 +84,24 @@ class gui:
         # list of indexes
         catSel = self.catF.getSelected()
         if catSel:
-            colo = self.background.getColorOfSelectedCategory(catSel[0])
-            self.colorSelected(colo)
+            self.colorSelected(catSel[0])
 
     # makes the bankstatements colorless
     def decoloring(self):
-        self.colorSelected("white")
+        self.colorSelected(None)
 
     # with selected color, colors the selected bankstatments
-    def colorSelected(self, colo):
+    def colorSelected(self, catSel):
         if self.frameDoesNotExist(self.banF) or self.frameDoesNotExist(self.graF):
             return
-
+        colo = "white"
+        if catSel is not None:
+            colo = self.background.getColorOfSelectedCategory(catSel)
         # number of indexes
         banSel = self.banF.getSelecteds()
         if banSel:
             for sel in banSel:
-                self.background.changeColorStatement(sel, colo)
+                self.background.changeColorStatement(sel, catSel)
                 self.banF.colorStatement(sel, colo)
             self.createGraph()
 
