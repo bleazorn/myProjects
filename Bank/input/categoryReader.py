@@ -99,23 +99,24 @@ def deleteCategory(dataFile, categoryName):
     mytree = ET.parse(dataFile)
     myroot = mytree.getroot()
 
-    cat, catRoot = getCategoryFromName(myroot, categoryName)
+    cat, catRoot = getCategoryFromName(myroot, categoryName.split('.'))
     if cat:
         catRoot.remove(cat)
         mytree.write(dataFile, xml_declaration=True, encoding="UTF-8", method='xml')
 
 
-# TODO: get the parent field to optimize method
-# get the category from the given name.
-def getCategoryFromName(root, categoryName):
-    for cat in root:
-        if cat.tag == categoryC or cat.tag == DataCategory.subCategoryC:
-            name = cat.find(DataCategory.nameC).text
-            if name == categoryName:
-                return cat, root
-            subEle = cat.find(DataCategory.subCategoryC)
-            if subEle:
-                return getCategoryFromName(cat, categoryName)
+# get the category from list of categories in categories.
+def getCategoryFromName(root, catList):
+    if catList:
+        catName = catList[0]
+        for cat in root:
+            if cat.tag == categoryC or cat.tag == DataCategory.subCategoryC:
+                name = cat.find(DataCategory.nameC).text
+                if name == catName:
+                    if len(catList) == 1:
+                        return cat, root
+                    else:
+                        return getCategoryFromName(cat, catList[1:])
     return None, None
 
 

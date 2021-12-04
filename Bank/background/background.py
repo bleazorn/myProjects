@@ -48,7 +48,7 @@ class Background:
         if catLoc:
             splt = catLoc.split(".")
             i = len(splt)-1
-            temp = self.dataCat
+            temp = catR.getAllCategories(self.catFile)
             for s in splt:
                 for c in temp:
                     if c.getName() == s:
@@ -111,7 +111,10 @@ class Background:
     def delCategory(self, index):
         cat = self.dataCat.pop(index)
         self.decolorStatements(self.parentCat, cat)
-        catR.deleteCategory(self.catFile, cat.getName())
+        fullName = cat.getName()
+        if self.parentCat != "":
+            fullName = self.parentCat + "." + fullName
+        catR.deleteCategory(self.catFile, fullName)
 
     # Decolors all statements with the given category
     def decolorStatements(self, parent, cat):
