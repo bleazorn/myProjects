@@ -12,7 +12,7 @@ class BankStatementFrame(FrameSuper):
 
         self.listbox = tk.Listbox(parent, selectmode="extended", width=120, height=25, exportselection=0)
         #self.listbox.pack(expand=1, fill="both")
-        self.listbox.grid(row=self.row, column=self.col, rowspan=3)
+        self.listbox.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
 
         self.generateListbox()
 

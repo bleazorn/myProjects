@@ -19,6 +19,8 @@ class Background:
         self.dataCat = catR.getAllCategories(self.catFile)
         self.parentCat = ""
 
+        self.automate = False
+
     # returns a list of bankstatements only for background level
     def getBankStatements(self, first=None, last=None):
         if first and last:
@@ -81,6 +83,15 @@ class Background:
         if indexCat is not None:
             catName = self.dataCat[indexCat].getFullName()
         statement = self.dataBan[indexSta]
+        if self.automate:
+            staName = statement.getSender()
+            for sta in self.dataBan:
+                if sta.getSender() == staName:
+                    self.changeColorStatementRec(sta, catName)
+        else:
+            self.changeColorStatementRec(statement, catName)
+
+    def changeColorStatementRec(self, statement, catName):
         statement.setAttr(DataBank.CategoryNameC, catName)
         staR.changeStatement(self.staFile, statement)
 

@@ -15,29 +15,29 @@ class gui:
     def __init__(self, background):
         self.background = background
 
-        root = Tk()
+        self.root = Tk()
 
         self.catF = None
         self.banF = None
         self.staF = None
 
-        self.createRoot(root)
-        self.createMenu(root)
-        self.createFrames(root)
-        self.createBindings(root)
+        self.createRoot(self.root)
+        self.createMenu(self.root)
+        self.createFrames(self.root)
+        self.createBindings(self.root)
 
-        root.mainloop()
+        self.root.mainloop()
 
     # creates the root of the gui program
-    def createRoot(self, root):
-        root.title("Bank checking")
+    def createRoot(self, parent):
+        parent.title("Bank checking")
 
-        root.tk.call('tk', 'windowingsystem')
+        parent.tk.call('tk', 'windowingsystem')
 
-        root.columnconfigure(0, weight=1)
-        root.rowconfigure(0, weight=1)
+        parent.columnconfigure(0, weight=1)
+        parent.rowconfigure(0, weight=1)
 
-        root.option_add('*tearOff', FALSE)
+        parent.option_add('*tearOff', FALSE)
 
     # creates the menu of the gui program
     def createMenu(self, parent):
@@ -50,26 +50,31 @@ class gui:
 
         parent.config(menu=menubar)
 
+
     # creates the mainframe of the gui program
     def createFrames(self, parent):
         frm = ttk.Frame(parent, padding="3 3 12 12", name="mainFrame")
         frm.grid(column=0, row=0, sticky=(N, W, E, S))
 
         self.banF = BankStatementFrame(frm, self.background, (0, 0))
-        self.catF = CategoryFrame(frm, self.background, (0, 1))
-        self.graF = GraphBetweenDates(frm, self.background, (1, 3))
+        self.catF = CategoryFrame(frm, self.background, (0, 2))
+        self.graF = GraphBetweenDates(frm, self.background, (1, 4))
 
         buttColor = ttk.Button(frm, text="Color", command=self.coloring)
-        buttColor.grid(row=3, column=0)
+        buttColor.grid(row=3, column=1, sticky=W)
 
         buttDecolor = ttk.Button(frm, text="Decolor", command=self.decoloring)
-        buttDecolor.grid(row=3+1, column=0)
+        buttDecolor.grid(row=3+1, column=1, sticky=W)
 
         buttLGraph = ttk.Button(frm, text="<-", command=self.goPreviousGraph)
-        buttLGraph.grid(row=0, column=3)
+        buttLGraph.grid(row=0, column=4)
 
         buttRGraph = ttk.Button(frm, text="->", command=self.goNextGraph)
-        buttRGraph.grid(row=0, column=3 + 2)
+        buttRGraph.grid(row=0, column=4 + 2)
+
+        self.varAutomate = IntVar()
+        buttAutomate = ttk.Checkbutton(frm, text="Automate", variable=self.varAutomate, command=self.automate)
+        buttAutomate.grid(row=3, column=0, sticky=E)
 
     # generates all bindings for the root
     def createBindings(self, root):
@@ -94,10 +99,12 @@ class gui:
         catSel = self.catF.getSelected()
         if catSel:
             self.colorSelected(catSel[0])
+        self.root.event_generate("<<RefreshBank>>")
 
     # makes the bankstatements colorless
     def decoloring(self):
         self.colorSelected(None)
+        self.root.event_generate("<<RefreshBank>>")
 
     # with selected color, colors the selected bankstatments
     def colorSelected(self, catSel):
@@ -121,6 +128,12 @@ class gui:
     # event for when one of the date entries have changed
     def changeGraph(self, event):
         self.createGraph()
+
+    def automate(self):
+        if self.varAutomate.get():
+            self.background.automate = True
+        else:
+            self.background.automate = False
 
     # What to do when pressed enter
     def keyEventEnter(self, event):

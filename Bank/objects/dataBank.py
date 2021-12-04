@@ -7,6 +7,10 @@ class DataBank(DataEntry):
         super().__init__(*att)
         if len(att) == 1 and type(att[0]) is dict:
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
+        self.sender = self.getOther(self.getAttr("Details"))
+
+    def getSender(self):
+        return self.sender
 
     # in the form of x.z.t
     def getCategoryName(self):
