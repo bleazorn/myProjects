@@ -5,7 +5,7 @@ from tkinter import filedialog
 
 from GUI.frameBankStatement import BankStatementFrame
 from GUI.frameCategorie import CategoryFrame
-from GUI.frameGraph import GraphCanvas
+from GUI.frameGraphBetweenDates import GraphBetweenDates
 from GUI.frameSuper import FrameSuper
 from objects.dataCategory import DataCategory
 
@@ -56,13 +56,19 @@ class gui:
 
         self.banF = BankStatementFrame(frm, self.background, (0, 0))
         self.catF = CategoryFrame(frm, self.background, (0, 1))
-        self.graF = GraphCanvas(frm, self.background.getGraphData(), (0, 3))
+        self.graF = GraphBetweenDates(frm, self.background.getGraphData(), (1, 3))
 
         buttColor = ttk.Button(frm, text="Color", command=self.coloring)
         buttColor.grid(row=3, column=0)
 
-        buttColor = ttk.Button(frm, text="Decolor", command=self.decoloring)
-        buttColor.grid(row=3+1, column=0)
+        buttDecolor = ttk.Button(frm, text="Decolor", command=self.decoloring)
+        buttDecolor.grid(row=3+1, column=0)
+
+        buttLGraph = ttk.Button(frm, text="<-", command=self.goPreviousGraph)
+        buttLGraph.grid(row=0, column=3)
+
+        buttRGraph = ttk.Button(frm, text="->", command=self.goNextGraph)
+        buttRGraph.grid(row=0, column=3 + 2)
 
     # generates all bindings for the root
     def createBindings(self, root):
@@ -133,6 +139,18 @@ class gui:
         if sel:
             self.catF.delCat()
 
+    # go to the next graph type
+    def goNextGraph(self):
+        pass
+
+    # go to the previous graph type
+    def goPreviousGraph(self):
+        pass
+
+    # changes the graph type
+    def newGraph(self, index):
+        pass
+
     @staticmethod
     def frameDoesNotExist(fra):
-        return not issubclass(type(fra), FrameSuper)
+        return not isinstance(fra, FrameSuper)

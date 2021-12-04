@@ -8,9 +8,9 @@ from objects.dataBank import DataBank
 
 class BankStatementFrame(FrameSuper):
     def __init__(self, parent, background, loc=None):
-        super().__init__(loc)
+        super().__init__(parent, loc)
 
-        self.parent = parent
+        # class attributes
         self.background = background
 
         self.listbox = tk.Listbox(parent, selectmode="extended", width=120, height=25, exportselection=0)
