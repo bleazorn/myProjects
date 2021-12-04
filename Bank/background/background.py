@@ -183,7 +183,7 @@ class Background:
             nameC = cat.getName()
             colorC = cat.getColor()
             if temp.__contains__(nameC):
-                ret.append((nameC, -temp[nameC], colorC))
+                ret.append((nameC + "\n" + "{:.2f}".format(temp[nameC]), -temp[nameC], colorC))
             else:
                 ret.append((nameC, 0, colorC))
         return ret

@@ -28,9 +28,9 @@ class GraphBetweenDates(GraphSuper):
 
     def create(self):
         c_width = 500
-        c_height = 200
+        c_height = 210
         c_marginX = 20
-        c_marginYDown = 20
+        c_marginYDown = 30
         c_marginYUp = 20
 
         first = self.dateFirst.get_date()
@@ -45,7 +45,7 @@ class GraphBetweenDates(GraphSuper):
         try:
             c_barWidth = (c_width - ((len(data) + 1) * c_marginX)) // len(data)
             c_barHeight = c_height - c_marginYDown - c_marginYUp
-            c_textHeight = c_height - 10
+            c_textHeight = c_height - 13
 
             maxValue = 0
             for tup in data:
