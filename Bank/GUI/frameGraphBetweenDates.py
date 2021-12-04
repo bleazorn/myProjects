@@ -35,7 +35,7 @@ class GraphBetweenDates(GraphSuper):
 
         first = self.dateFirst.get_date()
         last = self.dateLast.get_date()
-        data = self.background.getGraphData(first, last)
+        data = self.background.getGraphDataBetweenDates(first, last)
 
         self.c = Canvas(self.parent, width=c_width, height=c_height)
         self.c.grid(row=self.row + 1, column=self.col, rowspan=2, columnspan=3)

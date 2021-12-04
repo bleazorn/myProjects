@@ -147,9 +147,8 @@ class Background:
         temp = data.pop(fromIndex)
         data.insert(toIndex, temp)
 
-
     # gets the data for the graph
-    def getGraphData(self, first=None, last=None):
+    def getGraphDataBetweenDates(self, first=None, last=None):
         stas = self.getBankStatements(first, last)
         cats = self.getCategories()
         ret = []
@@ -177,6 +176,9 @@ class Background:
             else:
                 ret.append((nameC, 0, colorC))
         return ret
+
+    def getGraphDataPeriodic(self, category ,periodLenght, periodType, first=None, last=None):
+        pass
 
     # changes the categories to the subcategories of the category with given index
     def getSubCategories(self, index):
