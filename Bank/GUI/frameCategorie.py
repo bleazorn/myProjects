@@ -8,10 +8,7 @@ from objects.dataCategory import DataCategory
 
 class CategoryFrame(FrameSuper):
     def __init__(self, parent, background, loc=None):
-        super().__init__(parent, loc)
-
-        # Class attributes
-        self.background = background
+        super().__init__(parent, background, loc)
 
         # Creation of Widgets
         self.listbox = tk.Listbox(parent, selectmode="extended", exportselection=0)

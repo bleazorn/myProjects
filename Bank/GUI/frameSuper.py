@@ -1,6 +1,7 @@
 class FrameSuper(object):
-    def __init__(self, parent, loc):
+    def __init__(self, parent, background, loc):
         self.parent = parent
+        self.background = background
         self.row, self.col = self.getRowCol(loc)
 
     @staticmethod

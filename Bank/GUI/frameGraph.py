@@ -9,12 +9,10 @@ from dateutil.relativedelta import relativedelta
 
 
 class GraphSuper(FrameSuper):
-    def __init__(self, parent, data, loc=None):
-        super().__init__(parent, loc)
+    def __init__(self, parent, background, loc=None):
+        super().__init__(parent, background, loc)
 
-        self.create(data)
-
-    def create(self, data):
+    def create(self):
         pass
 
 

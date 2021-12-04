@@ -6,6 +6,7 @@ from tkinter import filedialog
 from GUI.frameBankStatement import BankStatementFrame
 from GUI.frameCategorie import CategoryFrame
 from GUI.frameGraphBetweenDates import GraphBetweenDates
+from GUI.frameGraphPeriodic import GraphPeriodic
 from GUI.frameSuper import FrameSuper
 from objects.dataCategory import DataCategory
 
@@ -56,7 +57,7 @@ class gui:
 
         self.banF = BankStatementFrame(frm, self.background, (0, 0))
         self.catF = CategoryFrame(frm, self.background, (0, 1))
-        self.graF = GraphBetweenDates(frm, self.background.getGraphData(), (1, 3))
+        self.graF = GraphBetweenDates(frm, self.background, (1, 3))
 
         buttColor = ttk.Button(frm, text="Color", command=self.coloring)
         buttColor.grid(row=3, column=0)
@@ -113,12 +114,9 @@ class gui:
                 self.banF.colorStatement(sel, colo)
             self.createGraph()
 
-    # creates the graf including the date entries
+    # recreates the graf
     def createGraph(self):
-        first = self.graF.dateFirst.get_date()
-        last = self.graF.dateLast.get_date()
-        a = self.background.getGraphData(first, last)
-        self.graF.create(self.background.getGraphData(first, last))
+        self.graF.create()
 
     # event for when one of the date entries have changed
     def changeGraph(self, event):

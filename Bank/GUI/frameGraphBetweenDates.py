@@ -10,8 +10,8 @@ from dateutil.relativedelta import relativedelta
 
 
 class GraphBetweenDates(GraphSuper):
-    def __init__(self, parent, data, loc=None):
-        super().__init__(parent, data, loc)
+    def __init__(self, parent, background, loc=None):
+        super().__init__(parent, background, loc)
         self.parent = parent
         self.c = None
 
@@ -24,13 +24,18 @@ class GraphBetweenDates(GraphSuper):
         self.dateFirst.grid(row=self.row, column=self.col)
         self.dateLast.grid(row=self.row, column=self.col+2)
 
+        self.create()
 
-    def create(self, data):
+    def create(self):
         c_width = 500
         c_height = 200
         c_marginX = 20
         c_marginYDown = 20
         c_marginYUp = 20
+
+        first = self.dateFirst.get_date()
+        last = self.dateLast.get_date()
+        data = self.background.getGraphData(first, last)
 
         self.c = Canvas(self.parent, width=c_width, height=c_height)
         self.c.grid(row=self.row + 1, column=self.col, rowspan=2, columnspan=3)
