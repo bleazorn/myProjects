@@ -7,7 +7,7 @@ class DataBank(DataEntry):
         super().__init__(*att)
         if len(att) == 1 and type(att[0]) is dict:
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
-        self.sender = self.getOther(self.getAttr("Details"))
+            self.sender = self.getOther(self.getAttr("Details"))
 
     def getSender(self):
         return self.sender
@@ -81,6 +81,7 @@ class CsvDataBank(DataBank):
             self.create(att[0], att[1])
             self.setAttr(DataBank.CategoryNameC, "")
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
+            self.sender = self.getOther(self.getAttr("Details"))
 
     # creates the data entry for bank statement. Needs the first line of the csv file and the data line
     def create(self, nameLine, dataLine):
