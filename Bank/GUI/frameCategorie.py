@@ -47,6 +47,9 @@ class CategoryFrame(FrameSuper):
             self.addListbox(cat, i)
             i += 1
 
+    def generateNewEvent(self, event):
+        self.generateListbox()
+
     # adds a listbox, only do when data is already correct
     def addListbox(self, cat, index):
         if not isinstance(cat, DataCategory):

@@ -20,6 +20,7 @@ class Background:
         self.parentCat = ""
 
         self.automate = False
+        self.income = True
 
     # returns a list of bankstatements only for background level
     def getBankStatements(self, first=None, last=None):
@@ -76,6 +77,37 @@ class Background:
 
         self.dataBan = staR.getBankStatements(self.staFile)
         self.dataBan.sort(key=lambda x: x.sortVolgnummer(), reverse=True)
+        self.colorIncome()
+
+    # checks if the income category exist, if it does not exist create it
+    def checkIfIncomeCategoryExist(self):
+        income = DataCategory("Income", "red")
+        index = self.getIndexCatWithName("Income")
+        if index >= 0:
+            return index
+        else:
+            self.addCategory(income)
+            return self.getIndexCatWithName("Income")
+
+    def getIndexCatWithName(self, name):
+        i = 0
+        for cat in self.dataCat:
+            if cat.getName() == name:
+                return i
+            i += 1
+        return -1
+
+    # goes over every bank statement. If it is positive, it will be classified as income
+    def colorIncome(self):
+        if not self.income:
+            return
+        indexCat = self.checkIfIncomeCategoryExist()
+        i = 0
+        for sta in self.dataBan:
+            bedrag = sta.getBedrag()
+            if bedrag > 0:
+                self.changeColorStatement(i, indexCat)
+            i += 1
 
     # change the color of the bankstatement with the given index
     def changeColorStatement(self, indexSta, indexCat):

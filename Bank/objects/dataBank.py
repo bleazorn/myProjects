@@ -3,12 +3,13 @@ from objects.dataEntry import DataEntry
 # normal class for bank entries
 class DataBank(DataEntry):
     CategoryNameC = "Category"
+    bedragC = "Bedrag"
     def __init__(self, *att):
         super().__init__(*att)
         if len(att) == 1 and type(att[0]) is dict:
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
             self.sender = self.getOther(self.getAttr("Details"))
-        self.setAttr("Bedrag", ".".join(self.getAttr("Bedrag").split(',')))
+            self.setAttr("Bedrag", ".".join(self.getAttr("Bedrag").split(',')))
 
     def getSender(self):
         return self.sender
@@ -16,6 +17,9 @@ class DataBank(DataEntry):
     # in the form of x.z.t
     def getCategoryName(self):
         return self.getAttr(DataBank.CategoryNameC)
+
+    def getBedrag(self):
+        return float(self.getAttr(DataBank.bedragC))
 
     # parse the details to get the senders name
     def getOther(self, details):
@@ -83,6 +87,7 @@ class CsvDataBank(DataBank):
             self.setAttr(DataBank.CategoryNameC, "")
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
             self.sender = self.getOther(self.getAttr("Details"))
+            self.setAttr("Bedrag", ".".join(self.getAttr("Bedrag").split(',')))
 
     # creates the data entry for bank statement. Needs the first line of the csv file and the data line
     def create(self, nameLine, dataLine):

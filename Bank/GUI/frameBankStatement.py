@@ -53,7 +53,6 @@ class BankStatementFrame(FrameSuper):
     def deleteListbox(self, index):
         self.listbox.delete(index, index)
 
-
     # sort listbox on certain data element
     def sortStatements(self, event):
         self.background.sortBankStatements()

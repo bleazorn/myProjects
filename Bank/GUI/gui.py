@@ -41,14 +41,24 @@ class gui:
 
     # creates the menu of the gui program
     def createMenu(self, parent):
-        menubar = tk.Menu(parent)
+        menuBar = tk.Menu(parent)
 
-        filemenu = tk.Menu(menubar)
-        filemenu.add_command(label="Add File", command=self.addCSVFILE)
+        # file menu
+        fileMenu = tk.Menu(menuBar)
+        fileMenu.add_command(label="Add File", command=self.addCSVFILE)
 
-        menubar.add_cascade(label="File", menu=filemenu)
+        menuBar.add_cascade(label="File", menu=fileMenu)
 
-        parent.config(menu=menubar)
+        # settings menu
+        settingMenu = tk.Menu(menuBar)
+        self.varIncome = IntVar()
+        self.varIncome.set(1)
+        settingMenu.add_checkbutton(label="Income Check", variable=self.varIncome, command=self.setIncome)
+        settingMenu.add_command(label="Income Automate", command=self.autmateIncome)
+
+        menuBar.add_cascade(label="Settings", menu=settingMenu)
+
+        parent.config(menu=menuBar)
 
     # creates the mainframe of the gui program
     def createFrames(self, parent):
@@ -70,6 +80,7 @@ class gui:
         root.bind('<<DateEntrySelected>>', self.changeGraph)
         root.bind("<<RefreshGraph>>", self.changeGraph)
         root.bind("<<RefreshBank>>", self.banF.generateNewEvent)
+        root.bind("<<RefreshCat>>", self.catF.generateNewEvent)
         root.bind("<<Color>>", self.coloring)
         root.bind("<<Decolor>>", self.decoloring)
         root.bind("<Return>", self.keyEventEnter)
@@ -79,7 +90,9 @@ class gui:
     def addCSVFILE(self):
         csvFile = filedialog.askopenfilename(initialdir="/", title="Open file", filetypes=(("csv files", "*.csv"), ("All files","*.*")))
         self.background.addCSV(csvFile)
-        self.banF.generateNew()
+        self.root.event_generate("<<RefreshBank>>")
+        self.root.event_generate("<<RefreshCat>>")
+        self.root.event_generate("<<RefreshGraph>>")
 
     # Colors the selected bankstatemenst with the selected catogrie colors
     def coloring(self, event):
@@ -134,6 +147,16 @@ class gui:
         sel = self.catF.getSelected()
         if sel:
             self.catF.delCat()
+
+    def setIncome(self):
+        if self.varIncome.get():
+            self.background.income = True
+        else:
+            self.background.income = False
+
+    def autmateIncome(self):
+        self.background.colorIncome()
+        self.root.event_generate("<<RefreshBank>>")
 
     # go to the next graph type
     def goNextGraph(self):
