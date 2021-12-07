@@ -81,13 +81,13 @@ class Background:
 
     # checks if the income category exist, if it does not exist create it
     def checkIfIncomeCategoryExist(self):
-        income = DataCategory("Income", "red")
-        index = self.getIndexCatWithName("Income")
+        income = DataCategory("Income", "green")
+        index = self.getIndexCatWithName(income.getName())
         if index >= 0:
             return index
         else:
             self.addCategory(income)
-            return self.getIndexCatWithName("Income")
+            return self.getIndexCatWithName(income.getName())
 
     def getIndexCatWithName(self, name):
         i = 0
@@ -99,15 +99,20 @@ class Background:
 
     # goes over every bank statement. If it is positive, it will be classified as income
     def colorIncome(self):
+        tempAutomate = self.automate
+        self.automate = False
+
         if not self.income:
             return
         indexCat = self.checkIfIncomeCategoryExist()
         i = 0
         for sta in self.dataBan:
             bedrag = sta.getBedrag()
-            if bedrag > 0:
+            if bedrag > 0 and sta.getCategoryName()[:6] != "Income":
                 self.changeColorStatement(i, indexCat)
             i += 1
+
+        self.automate = tempAutomate
 
     # change the color of the bankstatement with the given index
     def changeColorStatement(self, indexSta, indexCat):
@@ -123,6 +128,7 @@ class Background:
         else:
             self.changeColorStatementRec(statement, catName)
 
+    # add the categorie to a statement and makes it persistent
     def changeColorStatementRec(self, statement, catName):
         statement.setAttr(DataBank.CategoryNameC, catName)
         staR.changeStatement(self.staFile, statement)
@@ -215,7 +221,10 @@ class Background:
             nameC = cat.getName()
             colorC = cat.getColor()
             if temp.__contains__(nameC):
-                ret.append((nameC + "\n" + "{:.2f}".format(temp[nameC]), -temp[nameC], colorC))
+                count = temp[nameC]
+                if count < 0:
+                    count = -count
+                ret.append((nameC + "\n" + "{:.2f}".format(count), count, colorC))
             else:
                 ret.append((nameC, 0, colorC))
         return ret

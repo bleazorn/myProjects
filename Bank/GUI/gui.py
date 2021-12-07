@@ -148,6 +148,7 @@ class gui:
         if sel:
             self.catF.delCat()
 
+    # set income to be automated
     def setIncome(self):
         if self.varIncome.get():
             self.background.income = True
