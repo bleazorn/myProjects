@@ -8,6 +8,7 @@ class DataBank(DataEntry):
         if len(att) == 1 and type(att[0]) is dict:
             self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
             self.sender = self.getOther(self.getAttr("Details"))
+        self.setAttr("Bedrag", ".".join(self.getAttr("Bedrag").split(',')))
 
     def getSender(self):
         return self.sender

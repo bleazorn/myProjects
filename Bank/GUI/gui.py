@@ -50,21 +50,14 @@ class gui:
 
         parent.config(menu=menubar)
 
-
     # creates the mainframe of the gui program
     def createFrames(self, parent):
         frm = ttk.Frame(parent, padding="3 3 12 12", name="mainFrame")
-        frm.grid(column=0, row=0, sticky=(N, W, E, S))
+        frm.grid(column=0, row=0)
 
         self.banF = BankStatementFrame(frm, self.background, (0, 0))
         self.catF = CategoryFrame(frm, self.background, (0, 2))
         self.graF = GraphBetweenDates(frm, self.background, (1, 4))
-
-        buttColor = ttk.Button(frm, text="Color", command=self.coloring)
-        buttColor.grid(row=3, column=1, sticky=W)
-
-        buttDecolor = ttk.Button(frm, text="Decolor", command=self.decoloring)
-        buttDecolor.grid(row=3+1, column=1, sticky=W)
 
         buttLGraph = ttk.Button(frm, text="<-", command=self.goPreviousGraph)
         buttLGraph.grid(row=0, column=4)
@@ -72,15 +65,13 @@ class gui:
         buttRGraph = ttk.Button(frm, text="->", command=self.goNextGraph)
         buttRGraph.grid(row=0, column=4 + 2)
 
-        self.varAutomate = IntVar()
-        buttAutomate = ttk.Checkbutton(frm, text="Automate", variable=self.varAutomate, command=self.automate)
-        buttAutomate.grid(row=3, column=0, sticky=E)
-
     # generates all bindings for the root
     def createBindings(self, root):
         root.bind('<<DateEntrySelected>>', self.changeGraph)
         root.bind("<<RefreshGraph>>", self.changeGraph)
         root.bind("<<RefreshBank>>", self.banF.generateNewEvent)
+        root.bind("<<Color>>", self.coloring)
+        root.bind("<<Decolor>>", self.decoloring)
         root.bind("<Return>", self.keyEventEnter)
         root.bind("<Delete>", self.keyEventDelete)
 
@@ -91,7 +82,7 @@ class gui:
         self.banF.generateNew()
 
     # Colors the selected bankstatemenst with the selected catogrie colors
-    def coloring(self):
+    def coloring(self, event):
         if self.frameDoesNotExist(self.catF):
             return
 
@@ -102,7 +93,7 @@ class gui:
         self.root.event_generate("<<RefreshBank>>")
 
     # makes the bankstatements colorless
-    def decoloring(self):
+    def decoloring(self, event):
         self.colorSelected(None)
         self.root.event_generate("<<RefreshBank>>")
 
@@ -128,12 +119,6 @@ class gui:
     # event for when one of the date entries have changed
     def changeGraph(self, event):
         self.createGraph()
-
-    def automate(self):
-        if self.varAutomate.get():
-            self.background.automate = True
-        else:
-            self.background.automate = False
 
     # What to do when pressed enter
     def keyEventEnter(self, event):
