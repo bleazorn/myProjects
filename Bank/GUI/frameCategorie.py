@@ -106,17 +106,19 @@ class CategoryFrame(FrameSuper):
                 self.moveCat(sel, sel - 1)
                 self.listbox.select_set(sel-1)
                 self.listbox.see(sel-1)
+                self.parent.master.event_generate("<<RefreshGraph>>")
 
     # moves every selected category one down
     def downCat(self, event):
         selected = self.listbox.curselection()
         if len(selected) > 0:
             for sel in reversed(selected):
-                if sel >= len(self.background.getCategoriesForGui()) or selected.__contains__(sel):
+                if sel >= len(self.background.getCategoriesForGui()):
                     continue
                 self.moveCat(sel, sel+1)
                 self.listbox.select_set(sel+1)
                 self.listbox.see(sel+1)
+                self.parent.master.event_generate("<<RefreshGraph>>")
 
     # change Color
     def changeColor(self, event):

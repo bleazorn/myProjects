@@ -85,6 +85,8 @@ class gui:
         root.bind("<<Decolor>>", self.decoloring)
         root.bind("<Return>", self.keyEventEnter)
         root.bind("<Delete>", self.keyEventDelete)
+        root.bind("z", self.catF.upCat)
+        root.bind("s", self.catF.downCat)
 
     # adds a csv file
     def addCSVFILE(self):
