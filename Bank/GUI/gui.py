@@ -6,6 +6,7 @@ from tkinter import filedialog
 from GUI.frameBankStatement import BankStatementFrame
 from GUI.frameCategorie import CategoryFrame
 from GUI.frameGraphBetweenDates import GraphBetweenDates
+from GUI.frameGraphInVsOut import GraphInVsOut
 from GUI.frameGraphPeriodic import GraphPeriodic
 from GUI.frameSuper import FrameSuper
 from objects.dataCategory import DataCategory
@@ -67,7 +68,7 @@ class gui:
 
         self.banF = BankStatementFrame(frm, self.background, (0, 0))
         self.catF = CategoryFrame(frm, self.background, (0, 2))
-        self.graF = GraphBetweenDates(frm, self.background, (1, 4))
+        self.graF = GraphInVsOut(frm, self.background, (1, 4))
 
         buttLGraph = ttk.Button(frm, text="<-", command=self.goPreviousGraph)
         buttLGraph.grid(row=0, column=4)

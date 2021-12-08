@@ -9,7 +9,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 
-class GraphBetweenDates(GraphSuper):
+class GraphInVsOut(GraphSuper):
     def __init__(self, parent, background, loc=None):
         super().__init__(parent, background, loc)
         self.parent = parent
@@ -43,33 +43,54 @@ class GraphBetweenDates(GraphSuper):
         self.c.create_line(0, c_height - c_marginYDown, c_width, c_height - c_marginYDown)
 
         try:
-            c_barWidth = (c_width - ((len(data) + 1) * c_marginX)) // len(data)
+            c_barWidth = (c_width - ((2 + 1) * c_marginX)) // 2
             c_barHeight = c_height - c_marginYDown - c_marginYUp
             c_textHeight = c_height - 13
 
-            maxValue = 0
-            newData = []
+            outcome = []
+            income = []
+            outcomeVal = 0
+            incomeVal = 0
             for tup in data:
                 bedrag = tup[1]
-                if bedrag > maxValue:
-                    maxValue = tup[1]
                 if bedrag < 0:
-                    bedrag = -bedrag
-                newData.append((tup[0], bedrag, tup[2]))
+                    bedrag = - bedrag
+                    outcomeVal += bedrag
+                    newTup = (tup[0], bedrag, tup[2])
+                    outcome.append(newTup)
+                elif bedrag >= 0:
+                    incomeVal += bedrag
+                    income.append(tup)
 
-            i = 0
-            for tup in newData:
-                x1 = c_marginX + (c_marginX + c_barWidth) * i
-                x2 = (c_marginX + c_barWidth) * (i + 1)
-                y1 = int(c_height - (c_marginYUp + (tup[1] / maxValue) * c_barHeight))
-                y2 = c_height - c_marginYDown
+            maxValue = incomeVal
+            if incomeVal < outcomeVal:
+                maxValue = outcomeVal
 
-                self.c.create_rectangle(x1, y1, x2, y2, fill=tup[2])
-                self.c.create_text((x1 + x2) // 2, c_textHeight, text=tup[0])
-                i += 1
+            pixelPerValue = c_barHeight / maxValue  # pixel/bedrag vb. 500/1000=> 500 euro == 250 pixels
+
+            self.createBar(income, pixelPerValue, c_marginX, c_barWidth, c_height, c_marginYDown, c_textHeight, "income\n" + "{:.2f}".format(incomeVal))
+            self.createBar(outcome, pixelPerValue, c_marginX * 2 + c_barWidth, c_barWidth, c_height, c_marginYDown, c_textHeight, "outcome\n" + "{:.2f}".format(-outcomeVal))
 
         except ZeroDivisionError:
             print("No categories. NNullpointError in Graph")
+
+    # creates the bar for both income and outcome
+    def createBar(self, data, pixelPerValue, c_minX, c_barWidth, c_height, c_marginYDown, c_textHeight, text):
+        vorigeHeight = 0
+        for tup in data:
+            x1 = c_minX
+            x2 = c_minX + c_barWidth
+
+            # TODO: make it correcter niet meer afronden
+            barHeight = int(tup[1] * pixelPerValue)
+            y1 = c_height - c_marginYDown - barHeight - vorigeHeight
+            y2 = c_height - c_marginYDown - vorigeHeight
+            vorigeHeight += barHeight
+
+            self.c.create_rectangle(x1, y1, x2, y2, fill=tup[2])
+            self.c.create_text((x1 + x2) // 2, c_textHeight, text=text)
+
+
 
 
 def test(event):

@@ -222,8 +222,6 @@ class Background:
             colorC = cat.getColor()
             if temp.__contains__(nameC):
                 count = temp[nameC]
-                if count < 0:
-                    count = -count
                 ret.append((nameC + "\n" + "{:.2f}".format(count), count, colorC))
             else:
                 ret.append((nameC, 0, colorC))
