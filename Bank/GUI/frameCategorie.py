@@ -76,8 +76,8 @@ class CategoryFrame(FrameSuper):
         for sel in reversed(selected):
             self.background.delCategory(sel)
             self.deleteListbox(sel)
-            self.parent.master.event_generate("<<RefreshGraph>>")
-            self.parent.master.event_generate("<<RefreshBank>>")
+            self.getRoot().event_generate("<<RefreshGraph>>")
+            self.getRoot().event_generate("<<RefreshBank>>")
 
     # moves category to new index, both listbox and data is updated
     def moveCat(self, fromIndex, toIndex):
@@ -106,7 +106,7 @@ class CategoryFrame(FrameSuper):
                 self.moveCat(sel, sel - 1)
                 self.listbox.select_set(sel-1)
                 self.listbox.see(sel-1)
-                self.parent.master.event_generate("<<RefreshGraph>>")
+                self.getRoot().event_generate("<<RefreshGraph>>")
 
     # moves every selected category one down
     def downCat(self, event):
@@ -118,7 +118,7 @@ class CategoryFrame(FrameSuper):
                 self.moveCat(sel, sel+1)
                 self.listbox.select_set(sel+1)
                 self.listbox.see(sel+1)
-                self.parent.master.event_generate("<<RefreshGraph>>")
+                self.getRoot().event_generate("<<RefreshGraph>>")
 
     # change Color
     def changeColor(self, event):
@@ -137,13 +137,13 @@ class CategoryFrame(FrameSuper):
         if selected:
             self.background.getSubCategories(selected[0])
             self.generateListbox()
-            self.parent.master.event_generate("<<RefreshGraph>>")
+            self.getRoot().event_generate("<<RefreshGraph>>")
 
     # goes back to the upper subcategory
     def backSubCat(self):
         self.background.goParentSubCat()
         self.generateListbox()
-        self.parent.master.event_generate("<<RefreshGraph>>")
+        self.getRoot().event_generate("<<RefreshGraph>>")
 
 
 def test():

@@ -66,6 +66,9 @@ class gui:
         frm = ttk.Frame(parent, padding="3 3 12 12", name="mainFrame")
         frm.grid(column=0, row=0)
 
+        bnkFrm = ttk.Frame(frm, padding="3 3 12 12", width=500, name="bankFrame")
+        bnkFrm.grid(column=0, row=0)
+
         self.banF = BankStatementFrame(frm, self.background, (0, 0))
         self.catF = CategoryFrame(frm, self.background, (0, 2))
         self.graF = GraphInVsOut(frm, self.background, (1, 4))
@@ -124,8 +127,8 @@ class gui:
         banSel = self.banF.getSelecteds()
         if banSel:
             for sel in banSel:
-                self.background.changeColorStatement(sel, catSel)
-                self.banF.colorStatement(sel, colo)
+                self.background.changeColorStatement(int(sel), catSel)
+                self.banF.colorStatement(self.background.getBankStatements()[int(sel)], colo)
             self.createGraph()
 
     # recreates the graf

@@ -2,14 +2,25 @@ from objects.dataEntry import DataEntry
 
 # normal class for bank entries
 class DataBank(DataEntry):
+    VolgnummerC = "Volgnummer"
+    UitvoeringsdatumC = "Uitvoeringsdatum"
+    BedragC = "Bedrag"
+    ValutarekeningC = "Valutarekening"
+    TEGENPARTIJVANDEVERRICHTINGC = "TEGENPARTIJVANDEVERRICHTING"
+    DetailsC = "Details"
+    RekeningnummerC = "Rekeningnummer"
     CategoryNameC = "Category"
-    bedragC = "Bedrag"
+    OtherOneC = "Other Party"
+
     def __init__(self, *att):
         super().__init__(*att)
         if len(att) == 1 and type(att[0]) is dict:
-            self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
-            self.sender = self.getOther(self.getAttr("Details"))
+            self.setAttr(DataBank.OtherOneC, self.getOther(self.getAttr("Details")))
+            self.name = self.getAttr("Volgnummer") + " : " + self.getAttr(DataBank.OtherOneC)
             self.setAttr("Bedrag", ".".join(self.getAttr("Bedrag").split(',')))
+
+    def getVolgNummer(self):
+        return self.getAttr(DataBank.VolgnummerC)
 
     def getSender(self):
         return self.sender
@@ -19,7 +30,16 @@ class DataBank(DataEntry):
         return self.getAttr(DataBank.CategoryNameC)
 
     def getBedrag(self):
-        return float(self.getAttr(DataBank.bedragC))
+        return float(self.getAttr(DataBank.BedragC))
+
+    def getGuiCols(self):
+        return [DataBank.VolgnummerC, DataBank.UitvoeringsdatumC, DataBank.BedragC, DataBank.OtherOneC, DataBank.CategoryNameC]
+
+    def getGuiData(self):
+        ret = []
+        for item in self.getGuiCols():
+            ret.append(self.getAttr(item))
+        return ret
 
     # parse the details to get the senders name
     def getOther(self, details):
@@ -85,8 +105,8 @@ class CsvDataBank(DataBank):
         if len(att) == 2 and type(att[0]) is str and type(att[1]) is str:
             self.create(att[0], att[1])
             self.setAttr(DataBank.CategoryNameC, "")
-            self.name = self.getAttr("Volgnummer") + " : " + self.getOther(self.getAttr("Details"))
-            self.sender = self.getOther(self.getAttr("Details"))
+            self.setAttr(DataBank.OtherOneC, self.getOther(self.getAttr("Details")))
+            self.name = self.getAttr("Volgnummer") + " : " + self.getAttr(DataBank.OtherOneC)
             self.setAttr("Bedrag", ".".join(self.getAttr("Bedrag").split(',')))
 
     # creates the data entry for bank statement. Needs the first line of the csv file and the data line

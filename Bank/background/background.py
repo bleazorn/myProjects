@@ -39,8 +39,8 @@ class Background:
     def getBankStatementsForGui(self, first=None, last=None):
         ret = []
         ban = self.getBankStatements(first, last)
-        for b in ban:
-            ret.append((str(b), self.getColorFromStatement(b)))
+        for sta in ban:
+            ret.append((sta, self.getColorFromStatement(sta)))
         return ret
 
     # returns the color of the category of the given bankstatement

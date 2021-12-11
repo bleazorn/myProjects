@@ -11,6 +11,14 @@ class FrameSuper(object):
         self.background = background
         self.row, self.col = self.getRowCol(loc)
 
+    # gets the root widget of the gui.
+    # Helpful for event bindings
+    def getRoot(self):
+        temp = self.parent
+        while temp.master:
+            temp = temp.master
+        return temp
+
     @staticmethod
     def getRowCol(loc):
         row = 0
