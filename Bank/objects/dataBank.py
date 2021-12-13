@@ -55,14 +55,43 @@ class DataBank(DataEntry):
         else:
             return ""
 
+    def sort(self, attribute):
+        if attribute == DataBank.VolgnummerC:
+            return self.sortVolgnummer()
+        elif attribute == DataBank.BedragC:
+            return self.sortNumber(attribute)
+        elif attribute == DataBank.UitvoeringsdatumC:
+            return self.sortDatum(attribute)
+        elif attribute == DataBank.OtherOneC or attribute == DataBank.CategoryNameC:
+            return self.sortString(attribute)
+
     # gives a value that can be used to sort on volgnummer
     def sortVolgnummer(self):
         splt = self.getAttr("Volgnummer").split("-")
         return int(splt[0]) * 10000 + int(splt[1])
 
-    # gives a value that can be used to sort on bedrag
-    def sortBedrag(self, name):
+    # gives a value that can be used to sort on int or float
+    def sortNumber(self, name):
         return float(self.getAttr(name))
+
+    # gives a value that can be used to sort on a date
+    def sortDatum(self, name):
+        date = self.getAttr(name)
+        splt = date.split("/")
+        if len(splt) == 3:
+            try:
+                return int(splt[0]) + int(splt[1]) * 100 + int(splt[2]) * 10000
+            except ValueError:
+                return 0
+        return 0
+
+    # gives a value that can be used to sort on a string
+    def sortString(self, name):
+        s = self.getAttr(name)
+        if s:
+            return s
+        else:
+            return "~"
 
     def __repr__(self):
         return self.getAttr("Volgnummer") + " : " + self.getAttr("Bedrag") + " : " + self.name + " : " + self.getAttr("Uitvoeringsdatum")
@@ -139,5 +168,5 @@ def test():
 
     list = [c1, c2, c3]
     print(list)
-    list.sort(key= lambda  x: x.sortBedrag("Bedrag"))
+    list.sort(key= lambda  x: x.sortNumber("Bedrag"))
     print(list)

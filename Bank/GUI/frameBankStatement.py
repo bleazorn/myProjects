@@ -13,7 +13,9 @@ class BankStatementFrame(FrameSuper):
 
         self.bankTable = ttk.Treeview(self.parent)
         self.bankTable.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
-        self.bankTable.bind('<Double-Button-1>', self.sortStatements)
+        self.bankTable.bind('<Double-Button-1>', self.doubleClicked)
+
+        self.doubleClick = False
 
         buttColor = ttk.Button(parent, text="Color", command=self.coloring)
         buttColor.grid(row=self.row+3, column=self.col+1, sticky=W)
@@ -56,7 +58,8 @@ class BankStatementFrame(FrameSuper):
             self.bankTable.heading("#0", text="", anchor=CENTER)
             for col in cols:
                 self.bankTable.column(col, anchor=CENTER, width=100)
-                self.bankTable.heading(col, text=col, anchor=CENTER)
+                self.bankTable.heading(col, text=col, anchor=CENTER, command=lambda c=col: self.sortStatements(text=c))
+                #
             self.generateRows(data)
 
     # generate rows for the bank table
@@ -78,14 +81,16 @@ class BankStatementFrame(FrameSuper):
     def generateNewEvent(self, event):
         self.generateNew()
 
+    def doubleClicked(self, event):
+        self.doubleClick = True
+
     # sort listbox on certain data element
-    def sortStatements(self, event):
+    def sortStatements(self, text):
         # self.background.sortBankStatements()
-        print("double clicked")
-        print(self.getSelecteds())
-        t = self.bankTable.focus()
-        print(self.bankTable.item(t))
-        self.generateNew()
+        if self.doubleClick:
+            self.background.sortBankStatements(text)
+            self.generateNew()
+            self.doubleClick = False
 
     # returns the indexes of selected bankstatements
     def getSelecteds(self):

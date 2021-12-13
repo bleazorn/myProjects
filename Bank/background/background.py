@@ -14,13 +14,14 @@ class Background:
         self.catFile = catFileP
 
         self.dataBan = staR.getBankStatements(self.staFile)
-        self.dataBan.sort(key=lambda x: x.sortVolgnummer(), reverse=True)
 
         self.dataCat = catR.getAllCategories(self.catFile)
         self.parentCat = ""
 
         self.automate = False
         self.income = True
+        self.sortingOrder = (DataBank.VolgnummerC, False)
+        self.sortBankStatements(DataBank.VolgnummerC)
 
     # returns a list of bankstatements only for background level
     def getBankStatements(self, first=None, last=None):
@@ -133,8 +134,17 @@ class Background:
         statement.setAttr(DataBank.CategoryNameC, catName)
         staR.changeStatement(self.staFile, statement)
 
-    def sortBankStatements(self, eleme=None):
-        pass
+    # sort the bankstatements to the given attribute
+    def sortBankStatements(self, attribute):
+        reverse = True
+        if self.sortingOrder[0] == attribute:
+            reverse = not self.sortingOrder[1]
+        else:
+            if attribute == DataBank.OtherOneC or attribute == DataBank.CategoryNameC:
+                reverse = False
+
+        self.dataBan.sort(key=lambda x: x.sort(attribute), reverse=reverse)
+        self.sortingOrder = (attribute, reverse)
 
     # returns a list of categories only for background level
     def getCategories(self):
