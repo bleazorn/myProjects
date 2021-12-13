@@ -11,10 +11,9 @@ class BankStatementFrame(FrameSuper):
 
         self.styleCreate(parent)
 
-        self.generateNew()
-        # self.listbox = tk.Listbox(parent, selectmode="extended", width=120, height=25, exportselection=0)
-        # self.listbox.pack(expand=1, fill="both")
-        # self.listbox.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
+        self.bankTable = ttk.Treeview(self.parent)
+        self.bankTable.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
+        self.bankTable.bind('<Double-Button-1>', self.sortStatements)
 
         buttColor = ttk.Button(parent, text="Color", command=self.coloring)
         buttColor.grid(row=self.row+3, column=self.col+1, sticky=W)
@@ -26,6 +25,7 @@ class BankStatementFrame(FrameSuper):
         buttAutomate = ttk.Checkbutton(parent, text="Automate", variable=self.varAutomate, command=self.automate)
         buttAutomate.grid(row=self.row+3, column=self.col+0, sticky=E)
 
+        self.generateTable()
 
     # don't delete this, this is for problems with python itself to be able to color things
     def styleCreate(self, parent):
@@ -57,48 +57,34 @@ class BankStatementFrame(FrameSuper):
             for col in cols:
                 self.bankTable.column(col, anchor=CENTER, width=100)
                 self.bankTable.heading(col, text=col, anchor=CENTER)
-            i = 0
-            for tup in data:
-                self.bankTable.insert(parent='', index='end', iid=str(i), text='', tags=[tup[0].getVolgNummer()],
-                               values=tup[0].getGuiData())
-                self.bankTable.tag_configure(tagname=tup[0].getVolgNummer(), background=tup[1])
-                i += 1
+            self.generateRows(data)
+
+    # generate rows for the bank table
+    def generateRows(self, data):
+        i = 0
+        for tup in data:
+            self.bankTable.insert(parent='', index='end', iid=str(i), text='', tags=[tup[0].getVolgNummer()],
+                                  values=tup[0].getGuiData())
+            self.bankTable.tag_configure(tagname=tup[0].getVolgNummer(), background=tup[1])
+            i += 1
 
     # generates new listbox
     def generateNew(self):
-        # TODO: Find maybe a more efficienter method.
-        """
-        This are both bugged:
-        ---
-            for row in treeview.get_children():
-                treeview.delete(row)
-        ---
-            treeview.delete(*treeview.get_children())
-        ---
-        """
-        self.bankTable = ttk.Treeview(self.parent)
-        self.bankTable.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
-        self.generateTable()
+        for row in self.bankTable.get_children():
+            self.bankTable.delete(row)
+        self.generateRows(self.background.getBankStatementsForGui())
 
     # event for generateNew
     def generateNewEvent(self, event):
         self.generateNew()
 
-    """
-    # adds a listbox, only do when data is already correct
-    def addListbox(self, dat, index):
-        if type(dat) is tuple and len(dat) == 2:
-            self.listbox.insert(index, dat[0])
-            self.listbox.itemconfig(index, bg=dat[1])
-
-    # deletes listbox, only do when data is already removed
-    def deleteListbox(self, index):
-        self.listbox.delete(index, index)
-    """
-
     # sort listbox on certain data element
     def sortStatements(self, event):
-        self.background.sortBankStatements()
+        # self.background.sortBankStatements()
+        print("double clicked")
+        print(self.getSelecteds())
+        t = self.bankTable.focus()
+        print(self.bankTable.item(t))
         self.generateNew()
 
     # returns the indexes of selected bankstatements
@@ -123,6 +109,8 @@ class BankStatementFrame(FrameSuper):
             self.background.automate = True
         else:
             self.background.automate = False
+
+
 
 
 def test():
