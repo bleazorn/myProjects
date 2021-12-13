@@ -23,7 +23,7 @@ class DataBank(DataEntry):
         return self.getAttr(DataBank.VolgnummerC)
 
     def getSender(self):
-        return self.sender
+        return self.getAttr(DataBank.OtherOneC)
 
     # in the form of x.z.t
     def getCategoryName(self):

@@ -11,12 +11,10 @@ class BankStatementFrame(FrameSuper):
 
         self.styleCreate(parent)
 
+        self.generateNew()
         # self.listbox = tk.Listbox(parent, selectmode="extended", width=120, height=25, exportselection=0)
         # self.listbox.pack(expand=1, fill="both")
         # self.listbox.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
-
-        self.bankTable = ttk.Treeview(parent)
-        self.bankTable.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
 
         buttColor = ttk.Button(parent, text="Color", command=self.coloring)
         buttColor.grid(row=self.row+3, column=self.col+1, sticky=W)
@@ -28,8 +26,6 @@ class BankStatementFrame(FrameSuper):
         buttAutomate = ttk.Checkbutton(parent, text="Automate", variable=self.varAutomate, command=self.automate)
         buttAutomate.grid(row=self.row+3, column=self.col+0, sticky=E)
 
-        # self.generateListbox()
-        self.generateTable()
 
     # don't delete this, this is for problems with python itself to be able to color things
     def styleCreate(self, parent):
@@ -70,7 +66,18 @@ class BankStatementFrame(FrameSuper):
 
     # generates new listbox
     def generateNew(self):
-        self.bankTable.delete(*self.bankTable.get_children())
+        # TODO: Find maybe a more efficienter method.
+        """
+        This are both bugged:
+        ---
+            for row in treeview.get_children():
+                treeview.delete(row)
+        ---
+            treeview.delete(*treeview.get_children())
+        ---
+        """
+        self.bankTable = ttk.Treeview(self.parent)
+        self.bankTable.grid(row=self.row, column=self.col, rowspan=3, columnspan=2)
         self.generateTable()
 
     # event for generateNew
