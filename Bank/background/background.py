@@ -16,6 +16,7 @@ class Background:
         self.dataBan = staR.getBankStatements(self.staFile)
 
         self.dataCat = catR.getAllCategories(self.catFile)
+        self.allCat = self.dataCat
         self.parentCat = ""
 
         self.automate = False
@@ -52,7 +53,7 @@ class Background:
         if catLoc:
             splt = catLoc.split(".")
             i = len(splt)-1
-            temp = catR.getAllCategories(self.catFile)
+            temp = self.allCat
             for s in splt:
                 for c in temp:
                     if c.getName() == s:
@@ -237,7 +238,27 @@ class Background:
                 ret.append((nameC, 0, colorC))
         return ret
 
-    def getGraphDataPeriodic(self, category ,periodLenght, periodType, first=None, last=None):
+    def getGraphDataStats(self):
+        stas = self.getBankStatements()
+        ret = {}
+        for sta in stas:
+            catName = sta.getCategoryName()
+            if catName == "":
+                continue
+
+            bedrag = sta.getBedrag()
+            parentDic = ret
+            for cat in catName.split("."):
+                if parentDic.__contains__(cat):
+                    temp = parentDic[cat]
+                    parentDic[cat] = (temp[0] + bedrag, temp[1])
+                else:
+                    parentDic[cat] = (bedrag, {})
+                parentDic = parentDic[cat][1]
+
+        return ret
+
+    def getGraphDataPeriodic(self, category, periodLenght, periodType, first=None, last=None):
         pass
 
     # changes the categories to the subcategories of the category with given index
@@ -256,7 +277,7 @@ class Background:
         if self.parentCat:
             splt = self.parentCat.split(".")
 
-            temp = catR.getAllCategories(self.catFile)
+            temp = self.allCat
 
             i = len(splt[:-1])
             for s in splt[:-1]:
