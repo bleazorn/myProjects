@@ -50,11 +50,9 @@ class GraphBetweenDates(GraphSuper):
             maxValue = 0
             newData = []
             for tup in data:
-                bedrag = tup[1]
+                bedrag = abs(tup[1])
                 if bedrag > maxValue:
-                    maxValue = tup[1]
-                if bedrag < 0:
-                    bedrag = -bedrag
+                    maxValue = bedrag
                 newData.append((tup[0], bedrag, tup[2]))
 
             i = 0
