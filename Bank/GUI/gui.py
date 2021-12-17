@@ -13,7 +13,13 @@ from objects.dataCategory import DataCategory
 
 
 class gui:
+    graphList = [
+                    GraphBetweenDates,
+                    GraphInVsOut
+                ]
+
     def __init__(self, background):
+        self.graphIndex = 0
         self.background = background
 
         self.root = Tk()
@@ -66,12 +72,11 @@ class gui:
         frm = ttk.Frame(parent, padding="3 3 12 12", name="mainFrame")
         frm.grid(column=0, row=0)
 
-        bnkFrm = ttk.Frame(frm, padding="3 3 12 12", width=500, name="bankFrame")
-        bnkFrm.grid(column=0, row=0)
+        self.graphParent = frm
 
         self.banF = BankStatementFrame(frm, self.background, (0, 0))
         self.catF = CategoryFrame(frm, self.background, (0, 2))
-        self.graF = GraphInVsOut(frm, self.background, (1, 4))
+        self.generateGraphFrame()
 
         buttLGraph = ttk.Button(frm, text="<-", command=self.goPreviousGraph)
         buttLGraph.grid(row=0, column=4)
@@ -165,13 +170,25 @@ class gui:
         self.background.colorIncome()
         self.root.event_generate("<<RefreshBank>>")
 
+    def generateGraphFrame(self):
+        if len(gui.graphList) > 0 and len(gui.graphList) > self.graphIndex >= 0 and self.graphParent:
+            self.graF = gui.graphList[self.graphIndex](self.graphParent, self.background, (1, 4))
+
     # go to the next graph type
     def goNextGraph(self):
-        pass
+        if self.graphIndex+1 >= len(gui.graphList):
+            self.graphIndex = 0
+        else:
+            self.graphIndex += 1
+        self.generateGraphFrame()
 
     # go to the previous graph type
     def goPreviousGraph(self):
-        pass
+        if self.graphIndex - 1 < 0:
+            self.graphIndex = len(gui.graphList) - 1
+        else:
+            self.graphIndex -= 1
+        self.generateGraphFrame()
 
     # changes the graph type
     def newGraph(self, index):
