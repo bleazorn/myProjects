@@ -8,12 +8,14 @@ class Background:
     def __init__(self, csvFile):
         self.csvFile = csvFile
         self.data = csvReader.getDataFromCsv(self.csvFile)
+        self.data.sort(key=lambda x: x.sortDatum(), reverse=True)
+        a = ""
 
     def getData(self):
         return self.data
 
     def addWeight(self, element):
-        self.data.append(element)
+        self.data.insert(0, element)
         csvReader.writeRowsToCsv(self.csvFile, self.data)
 
     def delWeight(self, index):
@@ -59,12 +61,12 @@ class Background:
         dates = getDatesBetween(firstDay, lastDay)
         for datum in dates:
             ele = WeightObj(datum)
-            self.data.append(ele)
+            self.data.insert(0, ele)
         csvReader.writeRowsToCsv(self.csvFile, self.data)
 
     def lastDay(self):
         if len(self.data) > 0:
-            return self.data[-1].getDate()
+            return self.data[0].getDate()
         else:
             return date.today()
 
