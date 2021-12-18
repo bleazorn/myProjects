@@ -12,7 +12,6 @@ from dateutil.relativedelta import relativedelta
 class GraphBetweenDates(GraphSuper):
     def __init__(self, parent, background, loc=None):
         super().__init__(parent, background, loc)
-        self.parent = parent
         self.c = None
 
         self.dateFirst = DateEntry(self.parent, name="first", selectmode='day', date_pattern='dd/MM/yyyy')
@@ -68,6 +67,11 @@ class GraphBetweenDates(GraphSuper):
 
         except ZeroDivisionError:
             print("No categories. NNullpointError in Graph")
+
+    def destroy(self):
+        self.c.destroy()
+        self.dateFirst.destroy()
+        self.dateLast.destroy()
 
 
 def test(event):

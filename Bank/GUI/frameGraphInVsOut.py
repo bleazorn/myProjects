@@ -90,6 +90,11 @@ class GraphInVsOut(GraphSuper):
             self.c.create_rectangle(x1, y1, x2, y2, fill=tup[2])
             self.c.create_text((x1 + x2) // 2, c_textHeight, text=text)
 
+    def destroy(self):
+        self.c.destroy()
+        self.dateFirst.destroy()
+        self.dateLast.destroy()
+
 
 
 

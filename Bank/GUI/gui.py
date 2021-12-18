@@ -15,6 +15,7 @@ from objects.dataCategory import DataCategory
 
 class gui:
     graphList = [
+                    GraphStats,
                     GraphBetweenDates,
                     GraphInVsOut
                 ]
