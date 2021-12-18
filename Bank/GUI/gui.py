@@ -8,12 +8,14 @@ from GUI.frameCategorie import CategoryFrame
 from GUI.frameGraphBetweenDates import GraphBetweenDates
 from GUI.frameGraphInVsOut import GraphInVsOut
 from GUI.frameGraphPeriodic import GraphPeriodic
+from GUI.frameGraphStats import GraphStats
 from GUI.frameSuper import FrameSuper
 from objects.dataCategory import DataCategory
 
 
 class gui:
     graphList = [
+                    GraphStats,
                     GraphBetweenDates,
                     GraphInVsOut
                 ]
