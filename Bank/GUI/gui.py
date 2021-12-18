@@ -15,7 +15,6 @@ from objects.dataCategory import DataCategory
 
 class gui:
     graphList = [
-                    GraphStats,
                     GraphBetweenDates,
                     GraphInVsOut
                 ]
@@ -80,12 +79,6 @@ class gui:
         self.catF = CategoryFrame(frm, self.background, (0, 2))
         self.generateGraphFrame()
 
-        buttLGraph = ttk.Button(frm, text="<-", command=self.goPreviousGraph)
-        buttLGraph.grid(row=0, column=4)
-
-        buttRGraph = ttk.Button(frm, text="->", command=self.goNextGraph)
-        buttRGraph.grid(row=0, column=4 + 2)
-
     # generates all bindings for the root
     def createBindings(self, root):
         root.bind('<<DateEntrySelected>>', self.changeGraph)
@@ -94,6 +87,8 @@ class gui:
         root.bind("<<RefreshCat>>", self.catF.generateNewEvent)
         root.bind("<<Color>>", self.coloring)
         root.bind("<<Decolor>>", self.decoloring)
+        root.bind("<<PrevGraph>>", self.goPrevGraph)
+        root.bind("<<NextGraph>>", self.goNextGraph)
         root.bind("<Return>", self.keyEventEnter)
         root.bind("<Delete>", self.keyEventDelete)
         root.bind("z", self.catF.upCat)
@@ -176,20 +171,20 @@ class gui:
         if len(gui.graphList) > 0 and len(gui.graphList) > self.graphIndex >= 0 and self.graphParent:
             self.graF = gui.graphList[self.graphIndex](self.graphParent, self.background, (1, 4))
 
-    # go to the next graph type
-    def goNextGraph(self):
-        if self.graphIndex+1 >= len(gui.graphList):
-            self.graphIndex = 0
-        else:
-            self.graphIndex += 1
-        self.generateGraphFrame()
-
     # go to the previous graph type
-    def goPreviousGraph(self):
+    def goPrevGraph(self, event):
         if self.graphIndex - 1 < 0:
             self.graphIndex = len(gui.graphList) - 1
         else:
             self.graphIndex -= 1
+        self.generateGraphFrame()
+
+    # go to the next graph type
+    def goNextGraph(self, event):
+        if self.graphIndex+1 >= len(gui.graphList):
+            self.graphIndex = 0
+        else:
+            self.graphIndex += 1
         self.generateGraphFrame()
 
     # changes the graph type

@@ -21,8 +21,8 @@ class GraphInVsOut(GraphSuper):
         self.dateFirst.set_date(date.today() - relativedelta(years=1))
         self.dateLast.set_date(date.today())
 
-        self.dateFirst.grid(row=self.row, column=self.col)
-        self.dateLast.grid(row=self.row, column=self.col+2)
+        self.dateFirst.grid(row=self.row + 1, column=self.col)
+        self.dateLast.grid(row=self.row + 1, column=self.col+2)
 
         self.create()
 
@@ -38,7 +38,7 @@ class GraphInVsOut(GraphSuper):
         data = self.background.getGraphDataBetweenDates(first, last)
 
         self.c = Canvas(self.parent, width=c_width, height=c_height)
-        self.c.grid(row=self.row + 1, column=self.col, rowspan=2, columnspan=3)
+        self.c.grid(row=self.row + 2, column=self.col, rowspan=2, columnspan=3)
 
         self.c.create_line(0, c_height - c_marginYDown, c_width, c_height - c_marginYDown)
 
