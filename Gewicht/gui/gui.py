@@ -16,7 +16,7 @@ class Gui:
         root.title("Bank checking")
 
         frm = ttk.Frame(root, padding="3 3 12 12")
-        frm.grid(column=0, row=0, sticky=(N, W, E, S))
+        frm.grid(column=0, row=0)
 
         self.lisF = ListFrame(frm, self.background, (0, 0))
         self.graF = GraphFrame(frm, None)

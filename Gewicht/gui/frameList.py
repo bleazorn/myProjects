@@ -2,23 +2,17 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 
-from gui.frameSuper import frameSuper
+from gui.frameSuper import FrameSuper
 from objects.weightObj import WeightObj
 
 
-class ListFrame(frameSuper):
+class ListFrame(FrameSuper):
     def __init__(self, parent, background, loc=None):
-        row = 0
-        col = 0
-        if loc and type(loc) is tuple and len(loc) == 2:
-            row = loc[0]
-            col = loc[1]
-
-        self.background = background
+        super().__init__(parent, background, loc)
 
         self.listbox = tk.Listbox(parent, selectmode="extended", width=120, height=25, exportselection=0)
-        self.listbox.grid(row=row, column=col, rowspan=2)
-        a = background.getData()
+        self.listbox.grid(row=self.row, column=self.col, rowspan=2)
+
         self.generateListbox(background.getData())
 
     # creates the listbox from the variable data
