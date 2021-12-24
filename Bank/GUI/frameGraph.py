@@ -25,9 +25,11 @@ class GraphSuper(FrameSuper):
         pass
 
     def goPreviousGraph(self):
+        self.destroy()
         self.getRoot().event_generate("<<PrevGraph>>")
 
     def goNextGraph(self):
+        self.destroy()
         self.getRoot().event_generate("<<NextGraph>>")
 
 
