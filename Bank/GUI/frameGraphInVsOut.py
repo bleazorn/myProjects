@@ -91,6 +91,7 @@ class GraphInVsOut(GraphSuper):
             self.c.create_text((x1 + x2) // 2, c_textHeight, text=text)
 
     def destroy(self):
+        super().destroy()
         self.c.destroy()
         self.dateFirst.destroy()
         self.dateLast.destroy()

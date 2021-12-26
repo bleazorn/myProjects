@@ -69,6 +69,7 @@ class GraphBetweenDates(GraphSuper):
             print("No categories. NNullpointError in Graph")
 
     def destroy(self):
+        super().destroy()
         self.c.destroy()
         self.dateFirst.destroy()
         self.dateLast.destroy()

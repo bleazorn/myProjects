@@ -12,17 +12,18 @@ from dateutil.relativedelta import relativedelta
 class GraphSuper(FrameSuper):
     def __init__(self, parent, background, loc=None):
         super().__init__(parent, background, loc)
-        buttLGraph = ttk.Button(parent, text="<-", command=self.goPreviousGraph)
-        buttLGraph.grid(row=self.row, column=self.col)
+        self.buttLGraph = ttk.Button(parent, text="<-", command=self.goPreviousGraph)
+        self.buttLGraph.grid(row=self.row, column=self.col)
 
-        buttRGraph = ttk.Button(parent, text="->", command=self.goNextGraph)
-        buttRGraph.grid(row=self.row, column=self.col + 2)
+        self.buttRGraph = ttk.Button(parent, text="->", command=self.goNextGraph)
+        self.buttRGraph.grid(row=self.row, column=self.col + 2)
 
     def create(self):
         pass
 
     def destroy(self):
-        pass
+        self.buttLGraph.destroy()
+        self.buttRGraph.destroy()
 
     def goPreviousGraph(self):
         self.getRoot().event_generate("<<PrevGraph>>")

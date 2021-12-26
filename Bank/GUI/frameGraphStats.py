@@ -17,6 +17,7 @@ class GraphStats(GraphSuper):
         self.textLabel.grid(row=self.row+1, column=self.col)
 
     def destroy(self):
+        super().destroy()
         self.textLabel.destroy()
 
     def generateText(self, data, prefix):
