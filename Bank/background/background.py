@@ -258,8 +258,28 @@ class Background:
 
         return ret
 
-    def getGraphDataPeriodic(self, category, periodLenght, periodType, first=None, last=None):
-        pass
+    def getGraphDataPeriodic(self, categories, relDelta, count, first):
+        periods = {}
+        i = 0
+        while i < count:
+            temp = first
+            first += relDelta
+            periods[(temp, first)] = {}
+            for cat in categories:
+                caty = self.dataCat[cat]
+                periods[(temp, first)][(caty.getFullName(), caty.getColor())] = 0
+            i += 1
+        for dat in self.dataBan:
+            datum = dat.getAttr("Uitvoeringsdatum")
+            datumDate = self.changeDatumStrInDate(datum)
+            if datumDate:
+                for period in periods:
+                    if period[0] <= datumDate < period[1]:
+                        for cat in periods[period]:
+                            catName = cat[0]
+                            if dat.getCategoryName()[:len(catName)] == catName:
+                                periods[period][cat] += dat.getBedrag()
+        return periods
 
     # changes the categories to the subcategories of the category with given index
     def getSubCategories(self, index):

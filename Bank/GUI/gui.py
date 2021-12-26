@@ -87,6 +87,7 @@ class gui:
         root.bind("<<RefreshGraph>>", self.changeGraph)
         root.bind("<<RefreshBank>>", self.banF.generateNewEvent)
         root.bind("<<RefreshCat>>", self.catF.generateNewEvent)
+        root.bind("<<periodicCat>>", lambda e: self.graF.setCategories(self.catF.getSelected()))
         root.bind("<<Color>>", self.coloring)
         root.bind("<<Decolor>>", self.decoloring)
         root.bind("<<PrevGraph>>", self.goPrevGraph)
