@@ -10,15 +10,24 @@ class GraphStats(GraphSuper):
         self.create()
 
     def create(self):
+        c_width = 500
+        c_height = 500
+        c_marginX = 20
+        c_marginYDown = 30
+        c_marginYUp = 20
+
         data = self.background.getGraphDataStats()
         self.getRemaining(data)
+
+        self.c = Canvas(self.parent, width=c_width, height=c_height)
+        self.c.grid(row=self.row + 1, column=self.col, rowspan=3, columnspan=3)
+
         text = self.generateText(data, "")
-        self.textLabel = ttk.Label(self.parent, text=text)
-        self.textLabel.grid(row=self.row+1, column=self.col)
+        self.c.create_text(100, 200, text=text)
 
     def destroy(self):
         super().destroy()
-        self.textLabel.destroy()
+        self.c.destroy()
 
     def generateText(self, data, prefix):
         text = ""
