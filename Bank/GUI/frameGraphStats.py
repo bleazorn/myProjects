@@ -18,7 +18,6 @@ class GraphStats(GraphSuper):
 
     def destroy(self):
         self.textLabel.destroy()
-        print("destroyer of worlds")
 
     def generateText(self, data, prefix):
         text = ""

@@ -57,7 +57,7 @@ class BankStatementFrame(FrameSuper):
             self.bankTable.column("#0", width=0, stretch=NO)
             self.bankTable.heading("#0", text="", anchor=CENTER)
             for col in cols:
-                self.bankTable.column(col, anchor=CENTER, width=100)
+                self.bankTable.column(col, anchor=CENTER, width=100, stretch=NO)
                 self.bankTable.heading(col, text=col, anchor=CENTER, command=lambda c=col: self.sortStatements(text=c))
                 #
             self.generateRows(data)
